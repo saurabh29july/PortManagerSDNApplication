@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<title>SDN Port Manager | Dashboard</title>
+
+<!-- Bootstrap Core CSS -->
+<link href="css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Custom CSS -->
+<link href="css/sb-admin.css" rel="stylesheet">
+
+<!-- Morris Charts CSS -->
+<link href="css/plugins/morris.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="font-awesome-4.1.0/css/font-awesome.min.css"
+	rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+
+	<div id="wrapper">
+
+		<!-- Navigation -->
+		<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target=".navbar-ex1-collapse">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="dashboard.html">SDN Port Manager
+					Application</a>
+			</div>
+			<!-- Top Menu Items -->
+			<ul class="nav navbar-right top-nav">
+
+			</ul>
+			<div class="collapse navbar-collapse navbar-ex1-collapse">
+				<ul class="nav navbar-nav side-nav">
+					<li class="active"><a href="dashboard.html"><i
+							class="fa fa-fw fa-dashboard"></i> Dashboard</a></li>
+					<li><a href="manage.html"><i class="fa fa-fw fa-tasks"></i>
+							Manage</a></li>
+					<li><a href="administration.html"><i
+							class="fa fa-fw fa-cogs"></i> Administration</a></li>
+					<li><a href="help.html"><i
+							class="fa fa-fw fa-question-circle"></i> Help</a></li>
+				</ul>
+			</div>
+			<!-- /.navbar-collapse -->
+		</nav>
+
+		<div id="page-wrapper" style="height: 680px; overflow-y: auto;">
+
+			<div class="container-fluid">
+
+				<!-- Page Heading -->
+				<div class="row">
+					<div class="col-lg-12">
+						<h1 class="page-header">
+							Dashboard <small>Overview</small>
+						</h1>
+						<ol class="breadcrumb">
+							<li class="active"><i class="fa fa-dashboard"></i> Port
+								usage and violations</li>
+						</ol>
+					</div>
+				</div>
+				<!-- /.row -->
+
+				<!-- MAIN CONTENT HERE -->
+
+				<div class="row">
+					<div class="col-lg-12">
+						<h4>Traffic analyzer</h4>
+						<div class="table-responsive">
+							<table class="table table-bordered table-hover table-striped"
+								id="trafficTable">
+								<thead>
+									<tr>
+										<th>Device</th>
+										<th>Port</th>
+										<th>Tx/Rx Packets</th>
+										<th>Tx/Rx Bytes</th>
+										<th>Tx/Rx Drops</th>
+										<th>Tx/Rx Errors</th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+
+				<!-- / MAIN CONTENT HERE -->
+			</div>
+			<!-- /.container-fluid -->
+
+		</div>
+		<!-- /#page-wrapper -->
+
+	</div>
+	<!-- /#wrapper -->
+
+	<!-- jQuery -->
+	<script src="js/jquery.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/plugins/notify/notify.min.js"></script>
+	<script src="js/plugins/json/json.js"></script>
+
+	<!-- Custom JS for SDN Port Manager -->
+	<script src="portmanager/application.js"></script>
+
+	<script type="text/javascript">
+		jQuery(document).ready(function() {
+			populateTraffic();
+		});
+
+		function populateTraffic() {
+
+			console.log("Populating devices managed by the defined ODL");
+
+			var nodes = {
+				"nodeProperties" : [ {
+					"node" : {
+						"id" : "00:00:00:00:00:00:00:02",
+						"type" : "OF"
+					},
+					"properties" : {
+						"tables" : {
+							"value" : "-1"
+						},
+						"description" : {
+							"value" : "None"
+						},
+						"actions" : {
+							"value" : "4095"
+						},
+						"macAddress" : {
+							"value" : "00:00:00:00:00:02"
+						},
+						"capabilities" : {
+							"value" : "199"
+						},
+						"timeStamp" : {
+							"value" : "1377291227877",
+							"name" : "connectedSince"
+						},
+						"buffers" : {
+							"value" : "256"
+						}
+					}
+				} ]
+			};
+
+			nodes = getDevices();
+
+			$.each(nodes.nodeProperties, function(i, item) {
+				// Creating the table row entry
+
+				var portStats = {
+					"node" : {
+						"id" : "00:00:00:00:00:00:00:01",
+						"type" : "OF"
+					},
+					"portStatistic" : [ {
+						"nodeConnector" : {
+							"node" : {
+								"id" : "00:00:00:00:00:00:00:01",
+								"type" : "OF"
+							},
+							"id" : "3",
+							"type" : "OF"
+						},
+						"receivePackets" : "171",
+						"transmitPackets" : "2451",
+						"receiveBytes" : "11970",
+						"transmitBytes" : "235186",
+						"receiveDrops" : "0",
+						"transmitDrops" : "0",
+						"receiveErrors" : "0",
+						"transmitErrors" : "0",
+						"receiveFrameError" : "0",
+						"receiveOverRunError" : "0",
+						"receiveCrcError" : "0",
+						"collisionCount" : "0"
+					}, {
+						"nodeConnector" : {
+							"node" : {
+								"id" : "00:00:00:00:00:00:00:01",
+								"type" : "OF"
+							},
+							"id" : "2",
+							"type" : "OF"
+						},
+						"receivePackets" : "179",
+						"transmitPackets" : "2443",
+						"receiveBytes" : "12530",
+						"transmitBytes" : "234626",
+						"receiveDrops" : "4398",
+						"transmitDrops" : "9586",
+						"receiveErrors" : "202",
+						"transmitErrors" : "12",
+						"receiveFrameError" : "0",
+						"receiveOverRunError" : "0",
+						"receiveCrcError" : "0",
+						"collisionCount" : "0"
+					} ]
+				};
+
+				portStats = getPortStatistics(item.node.id);
+
+				$.each(portStats.portStatistic, function(i, stats) {
+
+					if (stats.nodeConnector.type == 'OF') {
+						var rowData = '<tr>';
+						rowData += '<td>' + item.node.id + '</td>';
+						rowData += '<td>' + stats.nodeConnector.id + '</td>';
+						rowData += '<td>' + stats.transmitPackets + " / "
+								+ stats.receivePackets + '</td>';
+						rowData += '<td>' + stats.transmitBytes + " / "
+								+ stats.receiveBytes + '</td>';
+						rowData += '<td>' + stats.transmitDrops + " / "
+								+ stats.receiveDrops + '</td>';
+						rowData += '<td class="red">' + stats.transmitErrors
+								+ " / " + stats.receiveErrors + '</td>';
+						rowData += '</tr>';
+
+						$("#trafficTable > tbody:last").append(rowData);
+					}
+				});
+
+			});
+
+		}
+	</script>
+
+</body>
+
+</html>

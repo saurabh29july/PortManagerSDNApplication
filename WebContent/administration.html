@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<title>SDN Port Manager | Administration</title>
+
+<!-- Bootstrap Core CSS -->
+<link href="css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Custom CSS -->
+<link href="css/sb-admin.css" rel="stylesheet">
+
+<!-- Morris Charts CSS -->
+<link href="css/plugins/morris.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="font-awesome-4.1.0/css/font-awesome.min.css"
+	rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+
+	<div id="wrapper">
+
+		<!-- Navigation -->
+		<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target=".navbar-ex1-collapse">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="dashboard.html">SDN Port Manager
+					Application</a>
+			</div>
+			<!-- Top Menu Items -->
+			<ul class="nav navbar-right top-nav">
+
+			</ul>
+			<div class="collapse navbar-collapse navbar-ex1-collapse">
+				<ul class="nav navbar-nav side-nav">
+					<li><a href="dashboard.html"><i
+							class="fa fa-fw fa-dashboard"></i> Dashboard</a></li>
+					<li><a href="manage.html"><i class="fa fa-fw fa-tasks"></i>
+							Manage</a></li>
+					<li class="active"><a href="administration.html"><i
+							class="fa fa-fw fa-cogs"></i> Administration</a></li>
+					<li><a href="help.html"><i
+							class="fa fa-fw fa-question-circle"></i> Help</a></li>
+				</ul>
+			</div>
+			<!-- /.navbar-collapse -->
+		</nav>
+
+		<div id="page-wrapper" style="height: 680px; overflow-y:auto;">
+
+			<div class="container-fluid">
+
+				<!-- Page Heading -->
+				<div class="row">
+					<div class="col-lg-12">
+						<h1 class="page-header">
+							Administration <small>Settings</small>
+						</h1>
+						<ol class="breadcrumb">
+							<li class="active"><i class="fa fa-cogs"></i> SDN Port
+								Manager Application Settings</li>
+						</ol>
+					</div>
+				</div>
+				<!-- /.row -->
+
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 class="panel-title">
+									<i class="fa fa-cog fa-fw"></i> OpenDaylight Configuration
+								</h3>
+								
+							</div>
+							<div class="panel-body">
+							<p class="help-block">You will be able to manage all devices available via this OpenDaylight Controller.</p>
+								<form role="form">
+
+									<div class="form-group input-group">
+										<span class="input-group-addon">HTTP://</span> <input
+											type="text" placeholder="192.168.1.1:8080"
+											class="form-control" id="controllerIP" >
+									</div>
+
+									<div class="form-group input-group">
+										<span class="input-group-addon"><i
+											class="fa fa-user fa-fw"></i></span> <input type="text"
+											placeholder="Username" class="form-control"
+											id="controllerUsername">
+									</div>
+
+									<div class="form-group input-group">
+										<span class="input-group-addon"><i
+											class="fa fa-unlock fa-fw"></i></span> <input type="password"
+											placeholder="Password" class="form-control"
+											id="controllerPassword">
+									</div>
+
+
+
+								</form>
+
+								<div class="text-left">
+									<button class="btn btn-xs btn-success" type="button" id="saveControllerSettings"
+										onclick="javascript:saveControllerSettings();">Save Controller Settings</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- MAIN CONTENT HERE -->
+
+				<!-- / MAIN CONTENT HERE -->
+			</div>
+			<!-- /.container-fluid -->
+
+		</div>
+		<!-- /#page-wrapper -->
+
+	</div>
+	<!-- /#wrapper -->
+
+	<!-- jQuery -->
+	<script src="js/jquery.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/plugins/notify/notify.min.js"></script>
+
+	<!-- Custom JS for SDN Port Manager -->
+	<script src="portmanager/application.js"></script>
+
+	<script type="text/javascript">
+		jQuery(document).ready(function() {
+			populateControllerSettings();
+		});
+
+		function saveControllerSettings() {
+
+			localStorage.setItem(controllerIP, $("#controllerIP").val());
+			localStorage.setItem(controllerUsername, $("#controllerUsername")
+					.val());
+			localStorage.setItem(controllerPassword, $("#controllerPassword")
+					.val());
+			
+			$("#saveControllerSettings").notify("Opendaylight Controller Settings Saved Successfully", "success");
+
+		}
+
+		function populateControllerSettings() {
+			$("#controllerIP").val(localStorage.getItem(controllerIP));
+			$("#controllerUsername").val(
+					localStorage.getItem(controllerUsername));
+			$("#controllerPassword").val(
+					localStorage.getItem(controllerPassword));
+		}
+	</script>
+
+</body>
+
+</html>

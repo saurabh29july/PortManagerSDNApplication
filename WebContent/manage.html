@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<title>SDN Port Manager | Manage</title>
+
+<!-- Bootstrap Core CSS -->
+<link href="css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Custom CSS -->
+<link href="css/sb-admin.css" rel="stylesheet">
+
+<!-- Morris Charts CSS -->
+<link href="css/plugins/morris.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="font-awesome-4.1.0/css/font-awesome.min.css"
+	rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+
+	<div id="wrapper">
+
+		<!-- Navigation -->
+		<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target=".navbar-ex1-collapse">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="dashboard.html">SDN Port Manager
+					Application</a>
+			</div>
+			<!-- Top Menu Items -->
+			<ul class="nav navbar-right top-nav">
+
+			</ul>
+			<div class="collapse navbar-collapse navbar-ex1-collapse">
+				<ul class="nav navbar-nav side-nav">
+					<li><a href="dashboard.html"><i
+							class="fa fa-fw fa-dashboard"></i> Dashboard</a></li>
+					<li class="active"><a href="manage.html"><i
+							class="fa fa-fw fa-tasks"></i> Manage</a></li>
+					<li><a href="administration.html"><i
+							class="fa fa-fw fa-cogs"></i> Administration</a></li>
+					<li><a href="help.html"><i
+							class="fa fa-fw fa-question-circle"></i> Help</a></li>
+				</ul>
+			</div>
+			<!-- /.navbar-collapse -->
+		</nav>
+
+		<div id="page-wrapper" style="height: 680px; overflow-y: auto;">
+
+			<div class="container-fluid">
+
+				<!-- Page Heading -->
+				<div class="row">
+					<div class="col-lg-12">
+						<h1 class="page-header">
+							Manage <small>Ports</small>
+						</h1>
+						<ol class="breadcrumb">
+							<li class="active"><i class="fa fa-tasks"></i> Manage
+								devices and ports</li>
+						</ol>
+					</div>
+				</div>
+				<!-- /.row -->
+
+				<!-- MAIN CONTENT HERE -->
+				<div class="row">
+					<div class="col-lg-12" id="deviceList">
+						<h4>Available Network Devices</h4>
+						<div class="table-responsive">
+							<table class="table table-bordered table-hover table-striped"
+								id="devicesTable">
+								<thead>
+									<tr>
+										<th>Device DPId</th>
+										<th>Name</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+						</div>
+					</div>
+
+					<div class="col-lg-12 hidden" id="portPolicy">
+						<h4 id="portsTableHeader">Configure ports on device
+							00:00:00:00:00:12</h4>
+						<div class="table-responsive">
+							<table class="table table-bordered table-hover table-striped"
+								id="portsTable">
+								<thead>
+									<tr>
+										<th>Port Id</th>
+										<th>Port Type</th>
+										<th>Port Name</th>
+										<th>Allowed MAC Addresses</th>
+										<th>Output Port</th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+						</div>
+						<br />
+						<button class="btn btn-mini btn-success" type="button"
+							id="applyPolicy" onclick="javascript:applyPolicy();">Apply
+							Policy</button>
+
+						<button class="btn btn-mini btn-warning" type="button"
+							onclick="javascript:cancelPolicy();">Back</button>
+						<br />
+					</div>
+
+				</div>
+
+				<!-- / MAIN CONTENT HERE -->
+			</div>
+			<!-- /.container-fluid -->
+
+		</div>
+		<!-- /#page-wrapper -->
+
+	</div>
+	<!-- /#wrapper -->
+
+	<!-- jQuery -->
+	<script src="js/jquery.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/plugins/notify/notify.min.js"></script>
+	<script src="js/plugins/json/json.js"></script>
+
+	<!-- Custom JS for SDN Port Manager -->
+	<script src="portmanager/application.js"></script>
+
+	<script type="text/javascript">
+		jQuery(document).ready(function() {
+			populateDevices();
+		});
+
+		function populateDevices() {
+			console.log("Populating devices managed by the defined ODL");
+
+			var nodes = {
+				"nodeProperties" : [ {
+					"node" : {
+						"id" : "00:00:00:00:00:00:00:02",
+						"type" : "OF"
+					},
+					"properties" : {
+						"tables" : {
+							"value" : "-1"
+						},
+						"description" : {
+							"value" : "None"
+						},
+						"actions" : {
+							"value" : "4095"
+						},
+						"macAddress" : {
+							"value" : "00:00:00:00:00:02"
+						},
+						"capabilities" : {
+							"value" : "199"
+						},
+						"timeStamp" : {
+							"value" : "1377291227877",
+							"name" : "connectedSince"
+						},
+						"buffers" : {
+							"value" : "256"
+						}
+					}
+				} ]
+			};
+
+			nodes = getDevices();
+
+			$
+					.each(
+							nodes.nodeProperties,
+							function(i, item) {
+								// Creating the table row entry
+								console.log("Test");
+								var rowData = '<tr>';
+								rowData += '<td>' + item.node.id + '</td>';
+								rowData += '<td>'
+										+ item.properties.description.value
+										+ '</td>';
+								rowData += '<td><button class="btn btn-xs btn-success" type="button" onclick="javascript:configureDevice(\''
+										+ item.node.id
+										+ '\');">Configure Ports</button></td>';
+								rowData += '</tr>';
+
+								$("#devicesTable > tbody:last").append(rowData);
+							});
+		}
+
+		function configureDevice(nodeId) {
+			console.log("Populating ports for node " + nodeId);
+			$("#portsTable > tbody:last").html("");
+			$('#portsTableHeader').html(
+					"Configure ports on device <i>" + nodeId + '</i>');
+			policyNodeId = nodeId;
+
+			var nodes = {
+				"nodeConnectorProperties" : [ {
+					"nodeconnector" : {
+						"node" : {
+							"id" : "00:00:00:00:00:00:00:01",
+							"type" : "OF"
+						},
+						"id" : "2",
+						"type" : "OF"
+					},
+					"properties" : {
+						"state" : {
+							"value" : "1"
+						},
+						"config" : {
+							"value" : "1"
+						},
+						"name" : {
+							"value" : "eth2"
+						}
+					}
+				}, {
+					"nodeconnector" : {
+						"node" : {
+							"id" : "00:00:00:00:00:00:00:01",
+							"type" : "OF"
+						},
+						"id" : "1",
+						"type" : "OF"
+					},
+					"properties" : {
+						"state" : {
+							"value" : "1"
+						},
+						"config" : {
+							"value" : "1"
+						},
+						"name" : {
+							"value" : "eth1"
+						}
+					}
+				} ]
+			};
+
+			nodes = getPorts(nodeId);
+
+			$
+					.each(
+							nodes.nodeConnectorProperties,
+							function(i, item) {
+								// Creating the table row entry
+								var portId = item.nodeconnector.id;
+								var rowData = '<tr class="portMacRow">';
+								rowData += '<td class="portid">'
+										+ item.nodeconnector.id + '</td>';
+								rowData += '<td>' + item.nodeconnector.type
+										+ '</td>';
+								rowData += '<td>' + item.properties.name.value
+										+ '</td>';
+								if (item.nodeconnector.type == 'SW') {
+									rowData += '<td><input class="form-control macAddress" placeholder="Comma seperated MAC addresses.." disabled></td>';
+									rowData += '<td><input class="form-control opPort" placeholder="Output port id" disabled></td>';
+								} else {
+									var foundPolicy = false;
+									var policies = localStorage
+											.getItem(policyObjects);
+
+									console.log(policies);
+									if (policies != null) {
+										policies = JSON.parse(policies);
+										$
+												.each(
+														policies,
+														function(i, policy) {
+															console.log(portId);
+															foundPolicy = true;
+															if ('\''
+																	+ policy.port
+																	+ '\'' == '\''
+																	+ portId
+																	+ '\'') {
+																foundPolicy = true;
+																rowData += '<td><input class="form-control macAddress" placeholder="Comma seperated MAC addresses.." value=\''+ policy.mac+'\'></td>';
+																rowData += '<td><input class="form-control opPort" placeholder="Output port id" value=\''+ policy.opPort+'\'></td>';
+															}
+														});
+									}
+
+									if (!foundPolicy) {
+										rowData += '<td><input class="form-control macAddress" placeholder="Comma seperated MAC addresses.."></td>';
+										rowData += '<td><input class="form-control opPort" placeholder="Output port id"></td>';
+									}
+
+								}
+								rowData += '</tr>';
+
+								$("#portsTable > tbody:last").append(rowData);
+							});
+
+			$("#deviceList").addClass("hidden");
+			$("#portPolicy").removeClass("hidden");
+
+		}
+
+		function applyPolicy() {
+			//var portDevice[];
+			console.log("Applying policy for the selected ports for device "
+					+ policyNodeId);
+
+			var policies = [];
+
+			$.each($(".portMacRow"), function(i, item) {
+				var policyObject = new Object;
+				policyObject.port = $(item).find(".portid").html()
+				console.log($(item).find(".portid").html());
+				policyObject.mac = $(item).find(".macAddress").val();
+				console.log($(item).find(".macAddress").val());
+				policyObject.opPort = $(item).find(".opPort").val();
+				console.log($(item).find(".opPort").val());
+				policies.push(policyObject);
+			});
+
+			console.log("Storing these policies...");
+			console.log(policies);
+			//Storing the policies in cache for later use
+			localStorage.setItem(policyObjects, JSON.stringify(policies));
+
+			$.each(policies, function(i, item) {
+				console.log(item);
+				//Recursively add flows for each allowed mac
+				if (item.mac != null && item.mac != "") {
+					var macs = item.mac.split(",");
+					for (i = 0; i < macs.length; i++) {
+						var mac = macs[i];
+						installAccessFlow(policyNodeId, item.port, item.opPort,
+								mac, "SDNPMAllow" + counter);
+						counter++;
+					}
+					//Create drop all policy
+					installDenyAllFlow(policyNodeId, item.port);
+				}
+
+			});
+
+			$("#applyPolicy").notify("Policy applied successfully!", "success");
+
+		}
+
+		function cancelPolicy() {
+			$("#portPolicy").addClass("hidden");
+			$("#deviceList").removeClass("hidden");
+		}
+	</script>
+
+</body>
+
+</html>
